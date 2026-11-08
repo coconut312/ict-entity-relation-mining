@@ -236,3 +236,9 @@ uv run python scripts/verify_neo4j.py               # 期望：可比项 11 / �
 
 本项目为参赛作品，源码用于学习交流与技术评审。
 涉及的大模型均通过官方 API 调用（DeepSeek / Qwen 系列），未包含任何第三方模型的权重或商业系统源码。
+
+---
+
+## 许可证
+
+本项目采用 MIT License，详见 [LICENSE](LICENSE)。
