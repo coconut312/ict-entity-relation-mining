@@ -1,0 +1,1 @@
+import{d as n,J as u,K as o,k as s}from"./vue-QyxXhjjB.js";const i=s(0);function c(){i.value+=1}function f(t){const a=s(!0);let e=!0;n(i,()=>{a.value&&t()}),u(()=>{if(a.value=!0,e){e=!1;return}t()}),o(()=>{a.value=!1})}export{c as b,f as u};

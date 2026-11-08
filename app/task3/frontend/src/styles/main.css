@@ -1,0 +1,359 @@
+/* ==========================================================================
+   全局样式与设计令牌
+   风格取向（依据宣讲会要求）：简洁、克制、信息密度适中、操作路径短。
+   ========================================================================== */
+
+:root {
+  --edm-primary: #2563eb;
+  --edm-primary-soft: #eff6ff;
+  --edm-success: #16a34a;
+  --edm-warning: #d97706;
+  --edm-danger: #dc2626;
+
+  --edm-bg: #f4f6fa;
+  --edm-surface: #ffffff;
+  --edm-border: #e5e8ef;
+  --edm-text: #1f2430;
+  --edm-text-2: #5b6474;    /* 白底对比度 ≈ 6.0:1 */
+  --edm-text-3: #6b7484;    /* 次级文本。原值 #98a1b0 对比度仅 2.6:1，字小又淡看不清；
+                               改为 #6b7484 后约 4.7:1，达到 WCAG AA 正文标准 */
+
+  --edm-radius: 10px;
+  --edm-radius-sm: 6px;
+  --edm-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 4px 12px rgba(16, 24, 40, 0.04);
+  --edm-shadow-hover: 0 2px 6px rgba(16, 24, 40, 0.08), 0 8px 24px rgba(16, 24, 40, 0.06);
+
+  --edm-header-h: 56px;
+  --edm-sidebar-w: 184px;
+
+  /* 动效令牌：时长克制在 150–320ms，只用位移/透明度/阴影，不用缩放与弹跳 */
+  --edm-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --edm-dur-fast: 150ms;
+  --edm-dur: 220ms;
+  --edm-dur-slow: 320ms;
+  --edm-border-hover: #d6dded;
+  --edm-row-hover: #f7f9fd;
+
+  /* 覆盖 Element Plus 主色，保持整体一致 */
+  --el-color-primary: #2563eb;
+  --el-border-radius-base: 6px;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--edm-bg);
+  color: var(--edm-text);
+  font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB",
+               "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------- 布局 ---------------- */
+
+/* 外框固定为视口高度且自身不滚动：整页不再出现滚动条，
+   滚动只发生在内容区（.edm-main），左侧菜单因此不会跟着滑走。 */
+.edm-layout { height: 100vh; height: 100dvh; overflow: hidden; }   /* dvh 兼容移动端工具栏 */
+/* flex 子项默认 min-height:auto，不置 0 会让内层容器撑高、把整页顶出滚动条 */
+.edm-layout > .el-container { min-height: 0; }
+
+.edm-header {
+  height: var(--edm-header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  background: var(--edm-surface);
+  border-bottom: 1px solid var(--edm-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.edm-brand { display: flex; align-items: center; gap: 11px; }
+
+.edm-brand__mark {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #2563eb, #4f8ef7);
+  color: #fff;
+  display: grid; place-items: center;
+  font-weight: 700; font-size: 14px;
+  letter-spacing: -0.5px;
+}
+
+.edm-brand__text { line-height: 1.2; }
+.edm-brand__title { font-size: 14.5px; font-weight: 600; }
+.edm-brand__sub { font-size: 11.5px; color: var(--edm-text-3); }
+
+.edm-header__right { display: flex; align-items: center; gap: 14px; }
+
+.edm-sidebar {
+  width: var(--edm-sidebar-w);
+  background: var(--edm-surface);
+  border-right: 1px solid var(--edm-border);
+  padding: 10px 9px;
+  height: 100%;
+  flex-shrink: 0;
+  overflow-y: auto;        /* 菜单自身过长时自己滚，不推动整页 */
+  position: sticky;        /* 双保险：即使祖先可滚，也固定在顶部 */
+  top: 0;
+}
+
+.edm-main {
+  padding: 18px 22px 36px;
+  overflow-y: auto;        /* 唯一的滚动容器 */
+  min-height: 0;
+  height: 100%;
+  background: var(--edm-bg);
+}
+
+/* 页头：标题在左，操作/状态在右，避免标题与按钮分成两行 */
+.edm-page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.edm-page-title {
+  font-size: 18px; font-weight: 650; margin: 0 0 4px; line-height: 1.35;
+}
+.edm-page-desc {
+  color: var(--edm-text-2); font-size: 12.5px; margin: 0; line-height: 1.65;
+  max-width: 720px;
+}
+
+/* ---------------- 卡片 ---------------- */
+
+.edm-card {
+  background: var(--edm-surface);
+  border: 1px solid var(--edm-border);
+  border-radius: var(--edm-radius);
+  box-shadow: var(--edm-shadow);
+  padding: 16px 18px;
+  transition: box-shadow var(--edm-dur) var(--edm-ease),
+              border-color var(--edm-dur) var(--edm-ease);
+}
+.edm-card--hover:hover {
+  box-shadow: var(--edm-shadow-hover);
+  border-color: var(--edm-border-hover);
+}
+.edm-card + .edm-card { margin-top: 14px; }
+
+.edm-card__head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  margin: -2px 0 12px;
+}
+.edm-card__title {
+  font-size: 13.5px; font-weight: 600; display: flex; align-items: center; gap: 7px;
+}
+.edm-card__title::before {
+  content: ''; width: 3px; height: 13px; border-radius: 2px;
+  background: var(--edm-primary);
+}
+
+/* ---------------- 统计卡 ---------------- */
+
+.edm-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(152px, 1fr));
+  gap: 12px;
+}
+
+.edm-stat {
+  background: var(--edm-surface);
+  border: 1px solid var(--edm-border);
+  border-radius: var(--edm-radius);
+  padding: 14px 16px;
+  box-shadow: var(--edm-shadow);
+  /* 入场：轻微上浮。用 nth-child 做 30ms 阶梯，避免整块卡片同时弹出 */
+  animation: edmRise var(--edm-dur-slow) var(--edm-ease) both;
+  transition: box-shadow var(--edm-dur) var(--edm-ease),
+              border-color var(--edm-dur) var(--edm-ease);
+}
+.edm-stat:hover {
+  box-shadow: var(--edm-shadow-hover);
+  border-color: var(--edm-border-hover);
+}
+.edm-stat:nth-child(2) { animation-delay: 30ms; }
+.edm-stat:nth-child(3) { animation-delay: 60ms; }
+.edm-stat:nth-child(4) { animation-delay: 90ms; }
+.edm-stat:nth-child(5) { animation-delay: 120ms; }
+.edm-stat:nth-child(6) { animation-delay: 150ms; }
+.edm-stat:nth-child(n+7) { animation-delay: 180ms; }
+
+@keyframes edmRise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.edm-stat__label {
+  font-size: 12px; color: var(--edm-text-2);
+  display: flex; align-items: center; gap: 5px; margin-bottom: 7px;
+}
+.edm-stat__value {
+  font-size: 23px; font-weight: 680; letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums; line-height: 1.1;
+}
+.edm-stat__unit { font-size: 12.5px; font-weight: 500; color: var(--edm-text-2); margin-left: 3px; }
+.edm-stat__foot { font-size: 11.5px; color: var(--edm-text-3); margin-top: 5px; }
+
+/* ---------------- 通用小件 ---------------- */
+
+.edm-toolbar {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+}
+.edm-toolbar--right { margin-left: auto; }
+
+.edm-muted { color: var(--edm-text-2); }
+.edm-dim { color: var(--edm-text-3); }
+.edm-mono { font-variant-numeric: tabular-nums; }
+.edm-nowrap { white-space: nowrap; }
+
+.edm-empty {
+  padding: 44px 20px;
+  text-align: center;
+  color: var(--edm-text-3);
+}
+.edm-empty__title { font-size: 13.5px; color: var(--edm-text-2); margin: 12px 0 6px; }
+.edm-empty__hint { font-size: 12.5px; line-height: 1.7; }
+
+.edm-chart { width: 100%; }
+
+/* 耗时指标：直接展示，便于感知响应速度 */
+.edm-perf {
+  font-size: 12px; color: var(--edm-text-3);
+  font-variant-numeric: tabular-nums;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.edm-perf--good { color: var(--edm-success); }
+.edm-perf--warn { color: var(--edm-warning); }
+
+/* ---------------- Element Plus 微调 ---------------- */
+
+.el-menu { border-right: none !important; }
+.el-menu-item {
+  height: 40px !important; line-height: 40px !important;
+  border-radius: var(--edm-radius-sm);
+  margin-bottom: 2px;
+  font-size: 13.5px;
+  padding-left: 14px !important;
+}
+.el-menu-item.is-active {
+  background: var(--edm-primary-soft) !important;
+  color: var(--edm-primary) !important;
+  font-weight: 600;
+}
+.el-table th.el-table__cell {
+  background: #fafbfd !important;
+  color: var(--edm-text-2);
+  font-weight: 600;
+}
+.el-table { font-size: 13px; }
+
+/* 长实体名单元格：换行展示而不是省略号截断。
+   （实体全称常达 20+ 字，如「山东第一医科大学第一附属医院（山东省千佛山医院）」，
+     单行 ellipsis 后只能靠悬停 tooltip 才能看全 —— 与图表侧「长名换行」同一取舍。）
+   只放宽换行，不改任何列宽/数据逻辑。 */
+.el-table .edm-cell-wrap .cell {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.55;
+}
+.el-descriptions__label { color: var(--edm-text-2) !important; }
+.el-form-item { margin-bottom: 14px; }
+.el-form-item__label { padding-bottom: 4px !important; }
+
+/* ==========================================================================
+   动效与微交互
+   原则：只做「反馈」与「引导视线」，不做装饰性动画。
+   时长 150–320ms；只用位移 / 透明度 / 阴影 / 颜色；不进缩放、不弹跳。
+   全部动效可被系统的 prefers-reduced-motion 关闭。
+   ========================================================================== */
+
+/* 路由切换：新内容轻微上浮就位，旧内容快速淡出（out-in，合计约 380ms） */
+.edm-route-enter-active {
+  transition: opacity var(--edm-dur) var(--edm-ease),
+              transform var(--edm-dur) var(--edm-ease);
+}
+.edm-route-leave-active {
+  transition: opacity var(--edm-dur-fast) var(--edm-ease);
+}
+.edm-route-enter-from { opacity: 0; transform: translateY(6px); }
+.edm-route-leave-to { opacity: 0; }
+
+/* 侧栏：选中项左侧一条细指示条，比整块高亮更克制 */
+.el-menu-item {
+  position: relative;
+  transition: background-color var(--edm-dur-fast) var(--edm-ease),
+              color var(--edm-dur-fast) var(--edm-ease);
+}
+.el-menu-item::before {
+  content: '';
+  position: absolute; left: 4px; top: 50%;
+  width: 3px; height: 0; border-radius: 2px;
+  background: var(--edm-primary);
+  transform: translateY(-50%);
+  transition: height var(--edm-dur) var(--edm-ease);
+}
+.el-menu-item.is-active::before { height: 18px; }
+
+/* 按钮：按下时 0.5px 位移，给出物理反馈但不夸张 */
+.el-button { transition: all var(--edm-dur-fast) var(--edm-ease); }
+.el-button:not(.is-text):not(.is-link):active { transform: translateY(0.5px); }
+
+/* 表格行：hover 走颜色过渡，避免生硬跳变 */
+.el-table__body tr > td.el-table__cell {
+  transition: background-color var(--edm-dur-fast) var(--edm-ease);
+}
+.el-table__body tr:hover > td.el-table__cell {
+  background-color: var(--edm-row-hover) !important;
+}
+
+/* 输入类控件统一过渡 */
+.el-input__wrapper,
+.el-textarea__inner,
+.el-select__wrapper {
+  transition: box-shadow var(--edm-dur-fast) var(--edm-ease);
+}
+
+/* 键盘可达性：只在键盘操作时显示焦点环，鼠标点击不显示 */
+:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, .45);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 滚动条：细、低对比，不抢视觉 */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d3d9e3; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #bcc5d3; }
+
+/* 尊重系统「减少动态效果」设置 —— 商业项目应当遵守 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* ---------------- 下拉浮层定位 ---------------- */
+/* 组件侧统一加了 :popper-options="{ strategy: 'fixed' }"（见 ItemSearch / EntityPicker），
+   这里再兜一层层级，避免浮层被内容区或顶栏压在下面。
+   背景：页面外框不再滚动后，浮层若仍按 absolute 相对文档定位，
+   在可滚动内容区里会出现「浮层不在选择框下面」的错位。 */
+.el-select__popper.el-popper {
+  z-index: 3000 !important;
+}

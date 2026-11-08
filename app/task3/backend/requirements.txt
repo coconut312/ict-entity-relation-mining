@@ -1,0 +1,14 @@
+# 任务三后端依赖（Python 技术栈，赛题推荐）
+#
+# 生产环境部署在 2 核 4G 云主机上，因此依赖必须极简：
+# 不引入 torch / transformers / paddle 等重型库，在线推理一律不依赖模型。
+#
+# 版本与 app/pyproject.toml（uv 锁定的实际依赖）对齐：平台代码直接复用 app/
+# 下的 ict_parse / platform / integrations，因此这里必须覆盖实际 import 到的包。
+fastapi>=0.143.0
+uvicorn[standard]>=0.54.0
+pydantic>=2.13.5
+python-multipart>=0.0.6
+openai>=3.19.2
+openpyxl>=3.1.5
+# neo4j>=6.4.0   # 仅 Neo4j 图库后端需要
